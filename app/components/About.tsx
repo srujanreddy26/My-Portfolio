@@ -1,52 +1,91 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { portfolioData } from "../data/portfolio";
+import { GraduationCap } from "lucide-react";
 
 export default function About() {
     return (
-        <section
-            id="about"
-            className="py-20 md:py-32 container mx-auto px-6 max-w-4xl"
-        >
-            <div className="flex flex-col md:flex-row gap-12 items-start">
-                <div className="md:w-3/5">
-                    <h2 className="flex items-center text-2xl md:text-3xl font-bold mb-8 text-zinc-300">
-                        <span className="text-blue-500 mr-2 text-xl font-mono">01.</span>
-                        {portfolioData.about.title}
-                        <span className="ml-4 h-px bg-zinc-700 flex-grow max-w-[200px]"></span>
+        <section id="about" className="py-32 px-6 bg-black">
+            <div className="max-w-5xl mx-auto">
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                    className="mb-20"
+                >
+                    <p className="section-label">About Me</p>
+                    <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
+                        A little about myself.
                     </h2>
+                </motion.div>
 
-                    <div className="text-zinc-400 space-y-4 leading-relaxed">
-                        <p>{portfolioData.about.description}</p>
-                        <p>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                            enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                            nisi ut aliquip ex ea commodo consequat.
-                        </p>
-
-                        <p>Here are a few technologies I've been working with recently:</p>
-
-                        <ul className="grid grid-cols-2 gap-2 mt-4 font-mono text-sm">
-                            {portfolioData.about.skills.map((skill) => (
-                                <li key={skill} className="flex items-center gap-2">
-                                    <span className="text-blue-500">▹</span>
-                                    {skill}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-
-                <div className="md:w-2/5 relative group">
-                    <div className="relative w-full aspect-square rounded overflow-hidden z-10 transition-transform duration-300 group-hover:-translate-y-1 group-hover:-translate-x-1">
-                        {/* Placeholder for profile image - using a colored div for now */}
-                        <div className="absolute inset-0 bg-zinc-800 flex items-center justify-center text-zinc-600 font-mono text-xs border border-zinc-700">
-                            [Profile Image Placeholder]
+                <div className="grid md:grid-cols-2 gap-16 items-start">
+                    {/* Bio */}
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                        <div className="space-y-5 text-base leading-relaxed" style={{ color: "#6b7280" }}>
+                            <p>
+                                I'm a Full-Stack Software Engineer passionate about building systems that handle real scale.
+                                At IndiaMart, I owned backend services processing over{" "}
+                                <span className="text-white font-medium">3 million API requests per week</span>, migrated
+                                infrastructure to GCP, and cut latency by 82%.
+                            </p>
+                            <p>
+                                Currently pursuing my Master's in Computer Science at{" "}
+                                <span className="text-white font-medium">DePaul University</span> with a perfect 4.0 GPA,
+                                staying sharp on modern web technologies and distributed systems.
+                            </p>
+                            <p>
+                                I thrive at the intersection of backend engineering and product thinking — writing clean,
+                                maintainable code that solves real problems at scale.
+                            </p>
                         </div>
-                        {/* Overlay */}
-                        <div className="absolute inset-0 bg-blue-500 opacity-20 hover:opacity-0 transition-opacity duration-300"></div>
-                    </div>
-                    {/* Border Design */}
-                    <div className="absolute inset-0 border-2 border-blue-500 translate-x-4 translate-y-4 rounded -z-10 transition-transform duration-300 group-hover:translate-x-3 group-hover:translate-y-3"></div>
+                    </motion.div>
+
+                    {/* Education */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                        <p className="text-xs font-bold uppercase tracking-widest mb-8" style={{ color: "#374151" }}>
+                            Education
+                        </p>
+                        <div className="space-y-4">
+                            {portfolioData.education.map((edu, i) => (
+                                <div key={i} className="work-card p-6">
+                                    <div className="flex items-start gap-3">
+                                        <GraduationCap size={18} style={{ color: edu.highlight ? "#818cf8" : "#374151", marginTop: 2 }} />
+                                        <div className="flex-1">
+                                            <div className="flex items-start justify-between gap-2">
+                                                <h4 className="font-bold text-white text-sm">{edu.school}</h4>
+                                                {edu.highlight && (
+                                                    <span className="text-xs px-2 py-0.5 rounded-full shrink-0"
+                                                        style={{ color: "#818cf8", background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)" }}>
+                                                        Current
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <p className="text-sm mt-0.5" style={{ color: "#6b7280" }}>{edu.degree}</p>
+                                            <div className="flex items-center justify-between mt-2">
+                                                <span className="text-xs font-mono" style={{ color: "#374151" }}>{edu.period}</span>
+                                                <span className="text-sm font-semibold" style={{ color: edu.highlight ? "#818cf8" : "#6b7280" }}>
+                                                    GPA: {edu.gpa}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </motion.div>
                 </div>
             </div>
         </section>

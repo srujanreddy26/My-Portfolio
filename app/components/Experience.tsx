@@ -1,57 +1,140 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { portfolioData } from "../data/portfolio";
 
-export default function Experience() {
+// Each job gets a card that stacks as you scroll
+function WorkCard({
+    job,
+    index,
+    total,
+}: {
+    job: (typeof portfolioData.experience)[0];
+    index: number;
+    total: number;
+}) {
+    const ref = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        offset: ["start end", "end start"],
+    });
+
+    const y = useTransform(scrollYProgress, [0, 1], [60, -60]);
+    const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
+
     return (
-        <section id="work" className="py-32 bg-black px-6">
-            <div className="container mx-auto max-w-4xl">
-                <motion.h2
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    className="text-sm font-bold uppercase tracking-widest text-neutral-500 mb-16"
+        <motion.div
+            ref={ref}
+            style={{ y, opacity }}
+            className="work-card p-8 md:p-10"
+        >
+            {/* Top row */}
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-6">
+                <div>
+                    {/* Index number watermark */}
+                    <span
+                        className="text-xs font-mono mb-3 block"
+                        style={{ color: "#374151" }}
+                    >
+                        {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+                    </span>
+                    <h3 className="text-2xl md:text-3xl font-bold text-white mb-1">
+                        {job.role}
+                    </h3>
+                    <p className="text-lg font-semibold gradient-text-indigo">{job.company}</p>
+                    <p className="text-sm mt-1" style={{ color: "#4b5563" }}>
+                        {job.location}
+                    </p>
+                </div>
+                <span
+                    className="shrink-0 self-start px-4 py-2 rounded-full text-xs font-mono"
+                    style={{
+                        background: "rgba(255,255,255,0.04)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        color: "#6b7280",
+                    }}
                 >
-                    Professional Experience
-                </motion.h2>
+                    {job.period}
+                </span>
+            </div>
 
-                <div className="space-y-24">
-                    {portfolioData.experience.map((job, index) => (
-                        <motion.div
-                            key={index}
-                            initial={{ opacity: 0, y: 50 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, margin: "-100px" }}
-                            transition={{ duration: 0.6 }}
-                            className="group relative pl-8 md:pl-0 border-l border-white/10 md:border-none"
-                        >
-                            <div className="md:grid md:grid-cols-[1fr_2fr] gap-8">
-                                {/* Left Column: Date & Company */}
-                                <div className="mb-6 md:mb-0">
-                                    <h3 className="text-2xl font-bold text-white mb-1 group-hover:text-purple-400 transition-colors">
-                                        {job.company}
-                                    </h3>
-                                    <p className="text-neutral-500 font-mono text-sm">{job.period}</p>
-                                    <p className="text-neutral-400 mt-2">{job.role}</p>
-                                </div>
+            {/* Summary */}
+            <p className="text-base leading-relaxed mb-6" style={{ color: "#9ca3af" }}>
+                {job.summary}
+            </p>
 
-                                {/* Right Column: Details */}
-                                <div>
-                                    <p className="text-lg text-neutral-300 mb-6 leading-relaxed">
-                                        {job.description}
-                                    </p>
-                                    <ul className="space-y-3">
-                                        {job.achievements && job.achievements.map((item, i) => (
-                                            <li key={i} className="flex items-start gap-3 text-neutral-400 text-sm">
-                                                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-purple-500 shrink-0" />
-                                                {item}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
-                        </motion.div>
+            {/* Achievements */}
+            <ul className="space-y-2.5 mb-8">
+                {job.achievements.map((item, i) => (
+                    <motion.li
+                        key={i}
+                        initial={{ opacity: 0, x: -12 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: i * 0.07 }}
+                        className="flex items-start gap-3 text-sm leading-relaxed"
+                        style={{ color: "#6b7280" }}
+                    >
+                        <span
+                            className="mt-2 w-1 h-1 rounded-full shrink-0"
+                            style={{ backgroundColor: job.color || "#6366f1" }}
+                        />
+                        {item}
+                    </motion.li>
+                ))}
+            </ul>
+
+            {/* Tech pills */}
+            <div className="flex flex-wrap gap-2">
+                {job.tech.map((t) => (
+                    <span
+                        key={t}
+                        className="px-3 py-1 rounded-full text-xs font-mono"
+                        style={{
+                            background: "rgba(99,102,241,0.06)",
+                            border: "1px solid rgba(99,102,241,0.15)",
+                            color: "#818cf8",
+                        }}
+                    >
+                        {t}
+                    </span>
+                ))}
+            </div>
+        </motion.div>
+    );
+}
+
+export default function Experience() {
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    return (
+        <section id="work" className="py-32 px-6 bg-black">
+            <div className="max-w-5xl mx-auto">
+                {/* Sticky header */}
+                <div className="sticky top-24 z-30 mb-16 pointer-events-none">
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                    >
+                        <p className="section-label">Career</p>
+                        <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-tight">
+                            Where I've worked.
+                        </h2>
+                    </motion.div>
+                </div>
+
+                {/* Scrolling cards */}
+                <div ref={containerRef} className="space-y-8 mt-[-60px]">
+                    {portfolioData.experience.map((job, i) => (
+                        <WorkCard
+                            key={i}
+                            job={job}
+                            index={i}
+                            total={portfolioData.experience.length}
+                        />
                     ))}
                 </div>
             </div>
