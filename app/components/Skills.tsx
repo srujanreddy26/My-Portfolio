@@ -129,7 +129,7 @@ export default function Skills() {
                         ))}
                     </div>
                 </div>
-            </div>
+            </div>.
 
             {/* Background Gradient */}
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-t from-indigo-950/20 to-transparent pointer-events-none blur-3xl" />
