@@ -124,7 +124,7 @@ export default function Skills() {
                                 </div>
                                 <div className="absolute -bottom-8 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap text-[10px] font-mono text-[#818cf8]">
                                     {skill.name}
-                                </div>
+                                </div>.
                             </div>
                         ))}
                     </div>
